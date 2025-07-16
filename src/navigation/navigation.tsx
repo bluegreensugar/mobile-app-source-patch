@@ -1,8 +1,12 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, TouchableOpacity, Text } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+import {
+  NavigationContainer,
+  DefaultTheme,
+  useNavigation
+} from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import i18n from '../utils/i18n'
 import config from '../config'
@@ -55,6 +59,7 @@ import AllProductReviews from '../screens/AllProductReviews'
 import DatePickerScreen from '../screens/DatePickerScreen'
 import { StripePaymentProvider } from '../screens/StripePaymentProvider'
 import { isDarkBackground } from '../utils'
+import AppDetail from '../screens/AppDetail'
 
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
@@ -80,13 +85,21 @@ const commonScreenOptions = {
 }
 
 const HomeSection = () => {
+  const navigation = useNavigation()
   return (
     <Stack.Navigator screenOptions={commonScreenOptions}>
       <Stack.Screen
         name={'HomeScreen'}
         component={HomeScreen}
         options={{
-          title: config.shopName.toUpperCase()
+          title: config.shopName.toUpperCase(),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AppDetail')}
+              style={{ marginRight: 10 }}>
+              <Text style={{ color: 'grey' }}>about app</Text>
+            </TouchableOpacity>
+          )
         }}
       />
       <Stack.Screen
@@ -114,6 +127,13 @@ const HomeSection = () => {
         name={'CheckoutShipping'}
         component={CheckoutShipping}
         options={{ title: i18n.t('Shipping') }}
+      />
+      <Stack.Screen
+        name={'AppDetail'}
+        component={AppDetail}
+        options={{
+          title: i18n.t('About app')
+        }}
       />
     </Stack.Navigator>
   )
