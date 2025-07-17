@@ -93,14 +93,7 @@ const HomeSection = () => {
         component={HomeScreen}
         options={{
           title: config.shopName.toUpperCase(),
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AppDetail')}
-              style={{ marginRight: 10 }}>
-              <Text style={{ color: 'grey' }}>about app</Text>
-            </TouchableOpacity>
-          )
-        }}
+          }}
       />
       <Stack.Screen
         name={'ProductDetail'}
@@ -128,13 +121,7 @@ const HomeSection = () => {
         component={CheckoutShipping}
         options={{ title: i18n.t('Shipping') }}
       />
-      <Stack.Screen
-        name={'AppDetail'}
-        component={AppDetail}
-        options={{
-          title: i18n.t('About app')
-        }}
-      />
+      
     </Stack.Navigator>
   )
 }
@@ -517,6 +504,11 @@ const MainNavigation = () => {
           component={DatePickerScreen}
           options={{ title: i18n.t('') }}
         />
+        <Stack.Screen
+        name={'AppDetail'}
+        component={AppDetail}
+        options={{ title: i18n.t('About app') }}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   )
