@@ -2,7 +2,7 @@ import React from 'react'
 import { Platform } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import i18n from '../utils/i18n'
 import config from '../config'
@@ -39,7 +39,6 @@ import Gallery from '../screens/Gallery'
 import OrderDetail from '../screens/OrderDetail'
 import ScrollPicker from '../screens/ScrollPicker'
 import MultipleCheckboxPicker from '../screens/MultipleCheckboxPicker'
-import CheckoutAuth from '../screens/CheckoutAuth'
 import ResetPassword from '../screens/ResetPassword'
 import SettlementsCompleteWebView from '../screens/SettlementsCompleteWebView'
 import VendorManageAddProductStep1 from '../screens/VendorManage/AddProductStep1'
@@ -55,6 +54,7 @@ import AllProductReviews from '../screens/AllProductReviews'
 import DatePickerScreen from '../screens/DatePickerScreen'
 import { StripePaymentProvider } from '../screens/StripePaymentProvider'
 import { isDarkBackground } from '../utils'
+import AppDetail from '../screens/AppDetail'
 
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
@@ -86,8 +86,8 @@ const HomeSection = () => {
         name={'HomeScreen'}
         component={HomeScreen}
         options={{
-          title: config.shopName.toUpperCase()
-        }}
+          title: config.shopName.toUpperCase(),
+          }}
       />
       <Stack.Screen
         name={'ProductDetail'}
@@ -115,6 +115,7 @@ const HomeSection = () => {
         component={CheckoutShipping}
         options={{ title: i18n.t('Shipping') }}
       />
+      
     </Stack.Navigator>
   )
 }
@@ -496,6 +497,11 @@ const MainNavigation = () => {
           name={'DatePickerScreen'}
           component={DatePickerScreen}
           options={{ title: i18n.t('') }}
+        />
+        <Stack.Screen
+        name={'AppDetail'}
+        component={AppDetail}
+        options={{ title: i18n.t('About app') }}
         />
       </Stack.Navigator>
     </NavigationContainer>

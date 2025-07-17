@@ -353,6 +353,15 @@ export class ProfileEdit extends Component {
           </View>
           <Icon name={this.iconType} style={styles.arrowIcon} />
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AppDetail')}
+          style={styles.signInBtnContainer}>
+          <View style={styles.IconNameWrapper}>
+            <Icon name="info-outline" style={styles.menuItemIcon} />
+            <Text style={styles.signInBtnText}>{i18n.t('Information')}</Text>
+          </View>
+         </TouchableOpacity> 
+
       </>
     )
   }
