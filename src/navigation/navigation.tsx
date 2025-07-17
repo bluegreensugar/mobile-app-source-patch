@@ -1,12 +1,8 @@
 import React from 'react'
-import { Platform, TouchableOpacity, Text } from 'react-native'
+import { Platform } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import {
-  NavigationContainer,
-  DefaultTheme,
-  useNavigation
-} from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import i18n from '../utils/i18n'
 import config from '../config'
@@ -43,7 +39,6 @@ import Gallery from '../screens/Gallery'
 import OrderDetail from '../screens/OrderDetail'
 import ScrollPicker from '../screens/ScrollPicker'
 import MultipleCheckboxPicker from '../screens/MultipleCheckboxPicker'
-import CheckoutAuth from '../screens/CheckoutAuth'
 import ResetPassword from '../screens/ResetPassword'
 import SettlementsCompleteWebView from '../screens/SettlementsCompleteWebView'
 import VendorManageAddProductStep1 from '../screens/VendorManage/AddProductStep1'
@@ -85,7 +80,6 @@ const commonScreenOptions = {
 }
 
 const HomeSection = () => {
-  const navigation = useNavigation()
   return (
     <Stack.Navigator screenOptions={commonScreenOptions}>
       <Stack.Screen
@@ -508,7 +502,7 @@ const MainNavigation = () => {
         name={'AppDetail'}
         component={AppDetail}
         options={{ title: i18n.t('About app') }}
-      />
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
