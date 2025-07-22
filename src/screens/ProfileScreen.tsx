@@ -24,6 +24,8 @@ import { setStartSettings } from '../redux/actions/appActions'
 // Components
 import Icon from '../components/Icon'
 import Spinner from '../components/Spinner'
+import { SwitchElement } from '../components/SwitchElement'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
   container: {
@@ -41,6 +43,15 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderColor: '#e3e3e3',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  signInSectionContainerDark: {
+    backgroundColor: theme.$grayColor,
+    width: '100%',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#9c9c9c',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -111,10 +122,22 @@ const styles = StyleSheet.create({
   hintText: {
     fontSize: 14,
     color: theme.$menuIconsColor
+  },
+  switchContainer: {
+    paddingHorizontal: 14,
+    width: '100%',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: theme.$menuItemsBorderColor,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 })
 
 export class ProfileEdit extends Component {
+  state = { theme: 'light' }
+
   componentDidMount() {
     const { pagesActions, settings } = this.props
     pagesActions.fetch(settings.layoutId)
@@ -130,7 +153,12 @@ export class ProfileEdit extends Component {
 
     return (
       <>
-        <View style={styles.signInSectionContainer}>
+        <View
+          style={{
+            ...styles.signInSectionContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? theme.$grayColor : '#f0eef8fe'
+          }}>
           <Text style={styles.signInSectionText}>
             {i18n.t('Seller').toUpperCase()}
           </Text>
@@ -138,7 +166,11 @@ export class ProfileEdit extends Component {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('VendorManageOrders')}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="archive" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Vendor Orders')}</Text>
@@ -148,7 +180,11 @@ export class ProfileEdit extends Component {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('VendorManageProducts')}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="pages" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>
@@ -162,7 +198,11 @@ export class ProfileEdit extends Component {
           onPress={() =>
             navigation.navigate('VendorManageCategoriesPicker', { parent: 0 })
           }
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="add-circle" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Add product')}</Text>
@@ -175,10 +215,19 @@ export class ProfileEdit extends Component {
 
   renderSettings(settings) {
     const { navigation } = this.props
+    AsyncStorage.getItem('themeProfile').then(savedTheme => {
+      if (savedTheme === 'light' || savedTheme === 'dark')
+        this.setState({ theme: savedTheme })
+    })
     return (
       <>
         {(settings.languages.length > 1 || settings.currencies.length > 1) && (
-          <View style={styles.signInSectionContainer}>
+          <View
+            style={{
+              ...styles.signInSectionContainer,
+              backgroundColor:
+                this.state.theme === 'light' ? theme.$grayColor : '#f0eef8fe'
+            }}>
             <Text style={styles.signInSectionText}>
               {i18n.t('Settings').toUpperCase()}
             </Text>
@@ -188,7 +237,11 @@ export class ProfileEdit extends Component {
         {settings.languages.length > 1 && (
           <TouchableOpacity
             onPress={() => navigation.navigate('LanguageSelection')}
-            style={styles.signInBtnContainer}>
+            style={{
+              ...styles.signInBtnContainer,
+              backgroundColor:
+                this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+            }}>
             <Text style={styles.signInBtnText}>{i18n.t('Language')}</Text>
             <View style={styles.IconNameWrapper}>
               <Text style={styles.hintText}>
@@ -202,7 +255,11 @@ export class ProfileEdit extends Component {
         {settings.currencies.length > 1 && (
           <TouchableOpacity
             onPress={() => navigation.navigate('CurrencySelection')}
-            style={styles.signInBtnContainer}>
+            style={{
+              ...styles.signInBtnContainer,
+              backgroundColor:
+                this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+            }}>
             <Text style={styles.signInBtnText}>{i18n.t('Currency')}</Text>
             <View style={styles.IconNameWrapper}>
               <Text style={styles.hintText}>
@@ -212,6 +269,15 @@ export class ProfileEdit extends Component {
             </View>
           </TouchableOpacity>
         )}
+        <View
+          style={{
+            ...styles.switchContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
+          <Text style={styles.signInBtnText}>{i18n.t('Theme')}</Text>
+          <SwitchElement />
+        </View>
       </>
     )
   }
@@ -221,7 +287,12 @@ export class ProfileEdit extends Component {
 
     return (
       <View>
-        <View style={styles.signInSectionContainer}>
+        <View
+          style={{
+            ...styles.signInSectionContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? theme.$grayColor : '#f0eef8fe'
+          }}>
           <Text style={styles.signInSectionText}>
             {i18n.t('Pages').toUpperCase()}
           </Text>
@@ -230,7 +301,11 @@ export class ProfileEdit extends Component {
           return (
             <TouchableOpacity
               key={index}
-              style={styles.signInBtnContainer}
+              style={{
+                ...styles.signInBtnContainer,
+                backgroundColor:
+                  this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+              }}
               onPress={() =>
                 registerDrawerDeepLinks(
                   {
@@ -289,7 +364,11 @@ export class ProfileEdit extends Component {
           <View style={styles.signInButtons}>
             <TouchableOpacity
               onPress={() => navigation.navigate('Login')}
-              style={{ ...styles.btn, backgroundColor: '#4fbe31' }}>
+              style={{
+                ...styles.btn,
+                backgroundColor:
+                  this.state.theme === 'light' ? '#4fbe31' : '#e5effcfe'
+              }}>
               <Text style={{ ...styles.btnText, color: '#fff' }}>
                 {i18n.t('Sign in')}
               </Text>
@@ -318,7 +397,12 @@ export class ProfileEdit extends Component {
 
     return (
       <>
-        <View style={styles.signInSectionContainer}>
+        <View
+          style={{
+            ...styles.signInSectionContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? theme.$grayColor : '#f0eef8fe'
+          }}>
           <Text style={styles.signInSectionText}>
             {i18n.t('Buyer').toUpperCase()}
           </Text>
@@ -326,7 +410,11 @@ export class ProfileEdit extends Component {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('ProfileEdit')}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="person" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Profile')}</Text>
@@ -336,7 +424,11 @@ export class ProfileEdit extends Component {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Orders')}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="receipt" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Orders')}</Text>
@@ -346,7 +438,11 @@ export class ProfileEdit extends Component {
 
         <TouchableOpacity
           onPress={this.logoutHandler}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="exit-to-app" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Logout')}</Text>
@@ -355,13 +451,16 @@ export class ProfileEdit extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('AppDetail')}
-          style={styles.signInBtnContainer}>
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
           <View style={styles.IconNameWrapper}>
             <Icon name="info-outline" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Information')}</Text>
           </View>
-         </TouchableOpacity> 
-
+        </TouchableOpacity>
       </>
     )
   }
@@ -372,7 +471,6 @@ export class ProfileEdit extends Component {
     if (auth.fetching) {
       return <Spinner visible />
     }
-
     return (
       <ScrollView style={styles.container}>
         {this.renderSignedIn(auth, cart)}
