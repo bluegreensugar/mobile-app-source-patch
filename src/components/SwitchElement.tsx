@@ -5,7 +5,7 @@ import { Switch } from 'react-native'
 
 type Theme = 'light' | 'dark'
 
-export const SwitchElement = () => {
+export const SwitchElement = props => {
   const [theme, setTheme] = useState<Theme>()
 
   useEffect(() => {
@@ -26,6 +26,7 @@ export const SwitchElement = () => {
     try {
       setTheme(newTheme)
       await AsyncStorage.setItem('themeProfile', newTheme)
+      props.onSwitch()
     } catch (e) {
       console.error('Error: switchTheme')
     }

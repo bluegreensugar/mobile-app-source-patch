@@ -144,8 +144,14 @@ export class ProfileEdit extends Component {
     if (!settings.languageCurrencyFeatureFlag) {
       setStartSettings(settings.selectedLanguage, settings.selectedCurrency)
     }
+    this.updateState();
   }
-
+  updateState() {
+    AsyncStorage.getItem('themeProfile').then(savedTheme => {
+      if (savedTheme === 'light' || savedTheme === 'dark')
+        this.setState({ theme: savedTheme })
+    })
+  }
   iconType = I18nManager.isRTL ? 'chevron-left' : 'chevron-right'
 
   renderVendorFields() {
@@ -215,10 +221,7 @@ export class ProfileEdit extends Component {
 
   renderSettings(settings) {
     const { navigation } = this.props
-    AsyncStorage.getItem('themeProfile').then(savedTheme => {
-      if (savedTheme === 'light' || savedTheme === 'dark')
-        this.setState({ theme: savedTheme })
-    })
+    
     return (
       <>
         {(settings.languages.length > 1 || settings.currencies.length > 1) && (
@@ -276,7 +279,7 @@ export class ProfileEdit extends Component {
               this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
           }}>
           <Text style={styles.signInBtnText}>{i18n.t('Theme')}</Text>
-          <SwitchElement />
+          <SwitchElement onSwitch = {()=>this.updateState()}/>
         </View>
       </>
     )
