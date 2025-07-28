@@ -144,7 +144,7 @@ export class ProfileEdit extends Component {
     if (!settings.languageCurrencyFeatureFlag) {
       setStartSettings(settings.selectedLanguage, settings.selectedCurrency)
     }
-    this.updateState();
+    this.updateState()
   }
   updateState() {
     AsyncStorage.getItem('themeProfile').then(savedTheme => {
@@ -221,7 +221,7 @@ export class ProfileEdit extends Component {
 
   renderSettings(settings) {
     const { navigation } = this.props
-    
+
     return (
       <>
         {(settings.languages.length > 1 || settings.currencies.length > 1) && (
@@ -279,8 +279,19 @@ export class ProfileEdit extends Component {
               this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
           }}>
           <Text style={styles.signInBtnText}>{i18n.t('Theme')}</Text>
-          <SwitchElement onSwitch = {()=>this.updateState()}/>
+          <SwitchElement onSwitch={() => this.updateState()} />
         </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ShopDiscussion')}
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
+          <View>
+            <Text style={styles.signInBtnText}>{i18n.t('Reviews')}</Text>
+          </View>
+        </TouchableOpacity>
       </>
     )
   }

@@ -21,6 +21,7 @@ import notifications from './reducers/notifications'
 import vendorManageProducts from './reducers/VendorManage/products'
 import vendorManageCategories from './reducers/VendorManage/categories'
 import vendorManageOrders from './reducers/VendorManage/orders'
+import shopDiscussion from './reducers/shopDiscussion'
 
 export const rootReducer = combineReducers({
   layouts,
@@ -36,6 +37,7 @@ export const rootReducer = combineReducers({
   productReviews,
   products,
   search,
+  shopDiscussion,
   steps,
   vendorCategories,
   vendors,
