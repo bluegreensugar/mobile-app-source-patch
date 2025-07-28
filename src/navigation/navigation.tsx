@@ -55,6 +55,8 @@ import DatePickerScreen from '../screens/DatePickerScreen'
 import { StripePaymentProvider } from '../screens/StripePaymentProvider'
 import { isDarkBackground } from '../utils'
 import AppDetail from '../screens/AppDetail'
+import ShopDiscussion from '../screens/ShopDiscussion'
+import NewShopReview from '../screens/NewShopReview'
 
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
@@ -499,9 +501,19 @@ const MainNavigation = () => {
           options={{ title: i18n.t('') }}
         />
         <Stack.Screen
-        name={'AppDetail'}
-        component={AppDetail}
-        options={{ title: i18n.t('About app') }}
+          name={'AppDetail'}
+          component={AppDetail}
+          options={{ title: i18n.t('About app') }}
+        /> 
+        <Stack.Screen
+          name={'ShopDiscussion'}
+          component={ShopDiscussion}
+          options={{title: i18n.t('Reviews') }}
+        />
+        <Stack.Screen
+          name={'NewShopReview'}
+          component={NewShopReview}
+          options={{title: i18n.t('Write a Review') }}
         />
       </Stack.Navigator>
     </NavigationContainer>
