@@ -19,6 +19,7 @@ import * as wishListActions from '../redux/actions/wishListActions'
 
 // Components
 import MyIcon from '../components/Icon'
+import { AddToCartWithAmount } from '../components/AddToCartWithAmount'
 
 // Utils
 import i18n from '../utils/i18n'
@@ -88,11 +89,6 @@ const styles = StyleSheet.create({
     paddingRight: 4,
     textAlign: 'center'
   },
-  emptyListDesc: {
-    fontSize: 16,
-    color: '#24282b',
-    marginTop: 8
-  },
   backTextWhite: {
     color: '#FFF'
   },
@@ -115,6 +111,9 @@ const styles = StyleSheet.create({
   backRightBtnRight: {
     backgroundColor: 'tomato',
     right: 0
+  },
+  cartButtonSwitcher: {
+    flexDirection: 'column'
   }
 })
 
@@ -127,7 +126,6 @@ export const WishListScreen = ({ navigation }) => {
     const fetchData = async () => {
       await dispatch(wishListActions.fetch())
     }
-
     fetchData()
     setIsLoading(false)
   }, [])
@@ -204,8 +202,11 @@ export const WishListScreen = ({ navigation }) => {
               {item.product}
             </Text>
             <Text style={styles.productItemPrice}>
-              {item.amount} x {formatPrice(item.price_formatted.price)}
+              {item.display_amount} x {formatPrice(item.price_formatted.price)}
             </Text>
+            <View style={styles.cartButtonSwitcher}>
+              <AddToCartWithAmount item={item} />
+            </View>
           </View>
         </View>
       </TouchableHighlight>
@@ -244,11 +245,10 @@ export const WishListScreen = ({ navigation }) => {
     )
   }
 
-  const renderList = () => {
+  const renderList = item => {
     if (!wishList.items.length) {
       return renderEmptyList()
     }
-
     return (
       <View style={styles.container}>
         <SwipeListView
