@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import theme from '../config/theme'
-
+import { bindActionCreators } from 'redux'
 // Utils
 import toInteger from 'lodash/toInteger'
 import get from 'lodash/get'
@@ -14,24 +14,29 @@ import {
   PRODUCT_NUM_COLUMNS
 } from '../utils'
 
+// Action
+import * as productsActions from '../redux/actions/productsActions'
+
 // Components
 import StarsRating from './StarsRating'
+import { AddToCartWithAmount } from '../components/AddToCartWithAmount'
 
 const RATING_STAR_SIZE = 14
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     borderWidth: 1,
     borderColor: theme.$productBorderColor,
     borderRadius: theme.$borderRadius,
     backgroundColor: '#fff',
     margin: 5,
-    marginBottom: 15,
+    marginBottom: 1,
     padding: 15,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    height: PRODUCT_IMAGE_WIDTH + 105,
+    height: PRODUCT_IMAGE_WIDTH + 200,
     maxWidth: `${Math.floor(94 / PRODUCT_NUM_COLUMNS)}%`
   },
   productImage: {
@@ -65,14 +70,12 @@ const styles = StyleSheet.create({
     width: 100
   },
   priceWrapper: {
-    flex: 1,
     flexDirection: 'row'
   },
   listPriceText: {
     textDecorationLine: 'line-through',
     color: theme.$darkColor,
     textAlign: 'left',
-    paddingRight: 4,
     paddingTop: 2,
     fontSize: 12
   },
@@ -80,10 +83,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'left'
   },
-  rating: {
-    marginLeft: -10,
-    marginRight: -10,
-    marginTop: 0
+  addToCartContainerWrapper: {
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   }
 })
 
@@ -167,7 +169,6 @@ const ProductListView = ({ product, settings, auth, onPress }) => {
 
   const { item } = product
   const imageUri = getImagePath(item)
-
   return (
     <TouchableOpacity style={styles.container} onPress={() => onPress(item)}>
       <View>
@@ -181,12 +182,17 @@ const ProductListView = ({ product, settings, auth, onPress }) => {
         )}
       </View>
       {renderDiscount()}
-      <View style={styles.description}>
-        <Text numberOfLines={2} style={styles.productName}>
-          {item.product}
-        </Text>
-        {renderRating()}
-        {renderPrice()}
+      <View style={styles.addToCartContainerWrapper}>
+        <View style={styles.description}>
+          <Text numberOfLines={2} style={styles.productName}>
+            {item.product}
+          </Text>
+          {renderRating()}
+          {renderPrice()}
+        </View>
+        <View>
+          <AddToCartWithAmount item={item} />
+        </View>
       </View>
     </TouchableOpacity>
   )
@@ -194,7 +200,12 @@ const ProductListView = ({ product, settings, auth, onPress }) => {
 
 const MemoizedProductListView = React.memo(ProductListView)
 
-export default connect(state => ({
-  settings: state.settings,
-  auth: state.auth
-}))(MemoizedProductListView)
+export default connect(
+  state => ({
+    settings: state.settings,
+    auth: state.auth
+  }),
+  dispatch => ({
+    productsActions: bindActionCreators(productsActions, dispatch)
+  })
+)(MemoizedProductListView)
