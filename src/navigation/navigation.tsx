@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, Button } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -57,7 +57,9 @@ import { isDarkBackground } from '../utils'
 import AppDetail from '../screens/AppDetail'
 import ShopDiscussion from '../screens/ShopDiscussion'
 import NewShopReview from '../screens/NewShopReview'
-
+import StaffsManage from '../screens/StaffsManage'
+import StaffDetail from '../screens/StaffDetail'
+import AddNewStaff from '../screens/AddNewStaff'
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -509,12 +511,36 @@ const MainNavigation = () => {
           name={'ShopDiscussion'}
           component={ShopDiscussion}
           options={{title: i18n.t('Reviews') }}
-        />
+        /> 
         <Stack.Screen
           name={'NewShopReview'}
           component={NewShopReview}
           options={{title: i18n.t('Write a Review') }}
         />
+        <Stack.Screen
+          name={'StaffsManage'}
+          component={StaffsManage}
+          options={{title: i18n.t('Staffs'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Add new')}
+                        />
+                    ) }}
+        />
+        <Stack.Screen
+          name={'StaffDetail'}
+          component={StaffDetail}
+          options={{title: i18n.t('Staff'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Edit')}
+                        />
+                    ) }}
+        />
+        <Stack.Screen
+          name={'AddNewStaff'}
+          component={AddNewStaff}
+          options={{title: i18n.t('Add new')}}
+        />
+       
       </Stack.Navigator>
     </NavigationContainer>
   )

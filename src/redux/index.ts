@@ -22,6 +22,7 @@ import vendorManageProducts from './reducers/VendorManage/products'
 import vendorManageCategories from './reducers/VendorManage/categories'
 import vendorManageOrders from './reducers/VendorManage/orders'
 import shopDiscussion from './reducers/shopDiscussion'
+import staffs from './reducers/staffs'
 
 export const rootReducer = combineReducers({
   layouts,
@@ -38,6 +39,7 @@ export const rootReducer = combineReducers({
   products,
   search,
   shopDiscussion,
+  staffs,
   steps,
   vendorCategories,
   vendors,

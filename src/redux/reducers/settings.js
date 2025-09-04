@@ -13,7 +13,8 @@ import {
   SET_LAYOUT_ID,
   FETCH_LAYOUTS_BLOCKS_SUCCESS,
   CATEGORY_VIEW_WITHOUT_IMAGE,
-  BLOCK_CATEGORIES
+  BLOCK_CATEGORIES,
+  GET_COUNTRIES
 } from '../../constants'
 
 const initialState = {
@@ -36,6 +37,8 @@ const initialState = {
   languageCurrencyFeatureFlag: true,
   languages: null,
   currencies: null,
+  countries:null,
+  states: null,
   isShopClosed: false,
   socialLoginLinks: {},
   checkout: {
@@ -111,6 +114,14 @@ export default function (state = initialState, action) {
             name: el.name
           }
         })
+      }
+
+      case GET_COUNTRIES:
+      return {
+        ...state,
+        countries: action.payload.countries,
+        states: action.payload.states,
+       
       }
 
     case LANGUAGE_CURRENCY_FEATURE_FLAG_OFF:
