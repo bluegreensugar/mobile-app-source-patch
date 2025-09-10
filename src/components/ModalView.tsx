@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  Modal
-} from 'react-native'
-import theme from '../config/theme'
+import React from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 
 // Utils
 import i18n from '../utils/i18n'
 
 const styles = StyleSheet.create({
   modalView: {
-    marginHorizontal: 50,
-    marginVertical: 70,
+    width: '80%',
+
+    marginHorizontal: 30,
+    marginVertical: 100,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -27,26 +20,39 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    padding: 20
   },
-  button: {
+  modalButton: {
     borderRadius: 10,
-    textAlign: 'center',
     borderColor: '#ff5500dc',
     borderWidth: 1,
-    padding: 10,
-    elevation: 2
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    margin: 10
+  },
+  modalButtonText: {
+    textAlign: 'center'
+  },
+  shadowBackground: {
+    flex: 1,
+    backgroundColor: '#68666666',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
 export const ModalView = ({ visible, children, onClose }: any) => {
   return (
     <>
-      <Modal visible={visible} transparent={true} animationType="slide">
-        <View style={styles.modalView}>
-          {children}
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.button}>{i18n.t('Close')}</Text>
-          </TouchableOpacity>
+      <Modal visible={visible} transparent={true} animationType="fade">
+        <View style={styles.shadowBackground}>
+          <View style={styles.modalView}>
+            <View>
+              {children}
+              <TouchableOpacity style={styles.modalButton} onPress={onClose}>
+                <Text style={styles.modalButtonText}>{i18n.t('Close')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </>

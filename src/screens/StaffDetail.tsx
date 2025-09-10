@@ -8,34 +8,37 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  ScrollView
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
+  ScrollView,
+  Alert
 } from 'react-native'
 import { launchImageLibrary } from 'react-native-image-picker'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import config from '../config'
-
 // Utils
 import i18n from '../utils/i18n'
 import { getImagePath } from '../utils'
-
 // Actions
 import * as staffsActions from '../redux/actions/staffsActions'
-
 // Components
 import { ModalView } from '../components/ModalView'
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  containerView: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: '#fff',
-     justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   modalText: {
-    marginBottom: 15,
-    textAlign: 'center'
+    marginBottom: 20
   },
   productItemImage: {
     margin: 10,
@@ -44,10 +47,10 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
-    width: 100,
-    height: 40,
-    right: 30,
+    bottom: 10,
+    width: '50%',
+    height: 50,
+
     elevation: 5,
     borderRadius: 10,
     backgroundColor: '#ff5500dc',
@@ -78,139 +81,249 @@ const styles = StyleSheet.create({
     borderColor: '#ff550080',
     borderRadius: 6
   },
+  inputError: {
+    borderColor: '#ff0000ff'
+  },
   scrollView: {
-    width: 100 + '%'
+    width: '100%',
+    marginBottom: 60
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5
   }
 })
+
+type Sex = 'man' | 'woman'
+interface Staff {
+  id_staff?: number | string
+  first_name: string
+  last_name: string
+  middle_name?: string
+  email: string
+  sex: Sex
+  position?: string
+  post?: string
+  description?: string
+  country?: string
+  state?: string
+  city?: string
+  address?: string
+  address_index?: string
+}
+interface File {
+  uri?: string
+  type?: string
+  name?: string
+}
+
+interface Countries {
+  code: string
+}
+interface CountryStates {
+  country_code: string
+  code: string
+  state: string
+}
+interface ErrorValid {
+  firstNameEmpty?: boolean
+  lastNameEmpty?: boolean
+  emailEmpty?: boolean
+  positionEmpty?: boolean
+  postEmpty?: boolean
+}
 
 export const StaffDetail = ({
   route,
   staffsActions,
   settings: { countries, states },
   navigation
-}:any) => {
-  const defaultImage = `${config.siteUrl}/images/no_image.png`
+}: any) => {
+  const idStaff: number | string = route.params?.idStaff
+  const isEditStaff: boolean = !!idStaff
+  const [countryModalVisible, setCountryModalVisible] = useState<boolean>(false)
+  const [stateModalVisible, setStateModalVisible] = useState<boolean>(false)
+  const [sexModalVisible, setSexModalVisible] = useState<boolean>(false)
+  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [edit, setEdit] = useState<boolean>(!isEditStaff)
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
+  const [middleName, setMiddleName] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [sex, setSex] = useState<Sex>('woman')
+  const [position, setPosition] = useState<string>('')
+  const [post, setPost] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [country, setCountry] = useState<string>('')
+  const [state, setState] = useState<string>('')
+  const [city, setCity] = useState<string>('')
+  const [address, setAddress] = useState<string>('')
+  const [addressIndex, setAddressIndex] = useState<string>()
+  const [staff, setStaff] = useState<Staff | null>(null)
+  const [validError, setValidError] = useState<ErrorValid>({
+    firstNameEmpty: false,
+    lastNameEmpty: false,
+    emailEmpty: false,
+    positionEmpty: false,
+    postEmpty: false
+  })
+  const file = useRef<File | null>(null)
 
-  const [countryModalVisible, setCountryModalVisible] = useState(false)
-  const [stateModalVisible, setStateModalVisible] = useState(false)
-  const [sexModalVisible, setSexModalVisible] = useState(false)
-  const [selectedImage, setSelectedImage] = useState('')
-  const [edit, setEdit] = useState(false)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [middleName, setMiddleName] = useState('')
-  const [email, setEmail] = useState('')
-  const [sex, setSex] = useState('')
-  const [position, setPosition] = useState('')
-  const [post, setPost] = useState('')
-  const [description, setDescription] = useState('')
-  const [country, setCountry] = useState('')
-  const [state, setState] = useState('')
-  const [city, setCity] = useState('')
-  const [address, setAddress] = useState('')
-  const [addressIndex, setAddressIndex] = useState('')
-  const [staff, setStaff] = useState('')
-  const [error, setError] = useState('')
-  const file = useRef(null)
-
-  const idStaff = route.params.idStaff
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const staffData = await staffsActions.fetchStaff(idStaff)
+        const staffData: Staff = await staffsActions.fetchStaffs(idStaff)
         setStaff(staffData)
-      } catch (err) {
-        setError(err)
+      } catch (err: any) {
+        Alert.alert(i18n.t('Error'), err?.message || i18n.t('Unknown error'))
       }
     }
-    if (idStaff) fetchStaff()
+    if (isEditStaff) fetchStaff()
   }, [idStaff])
 
   useEffect(() => {
-    defaultData();
+    if (staff) defaultData()
   }, [staff])
 
-  const defaultData = () =>{
-    setFirstName(staff.first_name)
-    setLastName(staff.last_name)
-    setMiddleName(staff.middle_name)
-    setEmail(staff.email)
-    setSex(staff.sex)
-    setPosition(staff.position)
-    setPost(staff.post)
-    setDescription(staff.description)
-    setCountry(staff.country)
-    setState(staff.state)
-    setCity(staff.city)
-    setAddress(staff.address)
-    setAddressIndex(staff.address_index)
+  const defaultData = () => {
+    setFirstName(staff?.first_name || '')
+    setLastName(staff?.last_name || '')
+    setMiddleName(staff?.middle_name || '')
+    setEmail(staff?.email || '')
+    setSex(staff?.sex || 'woman')
+    setPosition(staff?.position || '')
+    setPost(staff?.post || '')
+    setDescription(staff?.description || '')
+    setCountry(staff?.country || '')
+    setState(staff?.state || '')
+    setCity(staff?.city || '')
+    setAddress(staff?.address || '')
+    setAddressIndex(staff?.address_index || '')
   }
 
-  const handleSelectCountry = code => {
+  const handleSelectCountry = (code: string) => {
     setCountry(code)
-    setState(null)
+    setState('')
     setCountryModalVisible(false)
   }
 
-  const handleSelectState = code => {
+  const handleSelectState = (code: string) => {
     setState(code)
     setStateModalVisible(false)
   }
 
   const getStateName = () => {
-    const countryStates = states[country] || []
-    const found = countryStates.find(s => s.code === state)
+    const countryStates: CountryStates[] = states[country] || []
+    const found: CountryStates | undefined = countryStates.find(
+      (s: Countries) => s.code === state
+    )
     return found ? found.state : state
+  }
+  const checkStaffData = () => {
+    var valid = true
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (firstName.trim().length === 0) {
+      valid = false
+      setValidError(err => ({ ...err, firstNameEmpty: true }))
+    } else {
+      setValidError(err => ({ ...err, firstNameEmpty: false }))
+    }
+    if (lastName.trim().length === 0) {
+      valid = false
+      setValidError(err => ({ ...err, lastNameEmpty: true }))
+    } else {
+      setValidError(err => ({ ...err, lastNameEmpty: false }))
+    }
+    if (email.trim().length === 0 || !emailRegex.test(email)) {
+      valid = false
+      setValidError(err => ({ ...err, emailEmpty: true }))
+    } else {
+      setValidError(err => ({ ...err, emailEmpty: false }))
+    }
+    if (position.trim().length === 0) {
+      valid = false
+      setValidError(err => ({ ...err, positionEmpty: true }))
+    } else {
+      setValidError(err => ({ ...err, positionEmpty: false }))
+    }
+    if (post.trim().length === 0) {
+      valid = false
+      setValidError(err => ({ ...err, postEmpty: true }))
+    } else {
+      setValidError(err => ({ ...err, postEmpty: false }))
+    }
+    return valid
   }
 
   const handleSendStaffData = async () => {
-    var formData = new FormData()
-    formData.append('_method', 'PUT')
-
-    var data = {
-      id_staff: idStaff,
-      first_name: firstName,
-      last_name: lastName,
-      middle_name: middleName,
-      email: email,
-      sex: sex,
-      position: position,
-      post: post,
-      description: description,
-      country: country ? country : '',
-      state: state ? state : '',
-      city: city,
-      address: address,
-      address_index: addressIndex
-    }
-
-    Object.keys(data).forEach(key => {
-      formData.append(key, data[key])
-    })
-    if (file.current) {
-      formData.append('file_main_pair_image_detailed[0]', {
-        uri: file.current.uri,
-        type: file.current.type,
-        name: file.current.name || 'photo.jpg'
+    checkStaffData()
+    if (checkStaffData()) {
+      var formData = new FormData()
+      var data: Staff = {
+        first_name: firstName ?? '',
+        last_name: lastName ?? '',
+        middle_name: middleName ?? '',
+        email: email ?? '',
+        sex: sex ?? 'woman',
+        position: position ?? '',
+        post: post ?? '',
+        description: description ?? '',
+        country: country ?? '',
+        state: state ?? '',
+        city: city ?? '',
+        address: address ?? '',
+        address_index: addressIndex ?? ''
+      }
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key as keyof Staff])
       })
+      if (file.current) {
+        const timestamp: number = Date.now()
+        const indexDot: number | undefined = file.current.name?.lastIndexOf('.')
+        const ext: string = file.current.name?.slice(indexDot) || 'jpg'
+        const base: string =
+          file.current.name?.substring(0, indexDot) || 'photo'
+        formData.append('file_main_pair_image_detailed[0]', {
+          uri: file.current.uri,
+          type: file.current.type,
+          name: base + '_' + timestamp + '.' + ext
+        })
+      }
+      if (isEditStaff) {
+        formData.append('_method', 'PUT')
+        formData.append('id_staff', idStaff)
+      }
+      try {
+        await staffsActions.createStaff(formData)
+        navigation.navigate('StaffsManage', { refresh: true })
+      } catch (err: any) {
+        Alert.alert(i18n.t('Error'), err?.message || i18n.t('Unknown error'))
+      }
     }
-    staffsActions.updateStaff(formData)
-    navigation.pop()
   }
 
   const handleEdit = async () => {
-    if(edit){
-      defaultData();
-    }
+    if (edit && staff) defaultData()
     setEdit(!edit)
-    
   }
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Button onPress={() => handleEdit()} title="Edit" />
+      title: isEditStaff ? i18n.t('Edit') : i18n.t('Add'),
+      headerRight: () =>
+        isEditStaff ? (
+          <Button onPress={() => handleEdit()} title={i18n.t('Edit')} />
+        ) : null
     })
-  }, [navigation, edit])
+  }, [edit, isEditStaff])
 
   const pickImage = () => {
     if (edit) {
@@ -219,37 +332,40 @@ export const StaffDetail = ({
           console.log('User cancelled image picker')
         } else if (response.errorCode) {
           console.log('ImagePicker Error: ', response.errorMessage)
-        } else if (response.assets?.length > 0) {
-          setSelectedImage(response.assets[0].uri)
-          file.current = response.assets[0]
+        } else if (response?.assets && response.assets.length > 0) {
+          setSelectedImage(response.assets?.[0]?.uri || '')
+          file.current = response.assets?.[0] ?? {}
         }
       })
     }
   }
 
-  const modalContries = () => {
+  const modalCountries = () => {
     return (
-      <View>
-        <FlatList
-          data={Object.keys(countries)}
-          keyExtractor={item => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleSelectCountry(item)}>
-              <Text style={styles.modalText}>{countries[item]}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+      <FlatList
+        data={Object.keys(countries)}
+        keyExtractor={item => item}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleSelectCountry(item)}>
+            <Text style={styles.modalText}>{countries[item]}</Text>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>{i18n.t('No data to display')}</Text>
+          </View>
+        }
+      />
     )
   }
 
   const modalStates = () => {
     return (
-      <View>
+      <>
         {country && states[country]?.length > 0 ? (
           <FlatList
             data={states[country]}
-            keyExtractor={(item, index) => item.code + index}
+            keyExtractor={item => item.code}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => handleSelectState(item.code)}>
                 <Text>{item.state}</Text>
@@ -260,13 +376,14 @@ export const StaffDetail = ({
           <View>
             <Text>{i18n.t('State')}</Text>
             <TextInput
-              style={edit ? styles.inputEditMode : styles.input}
+              style={styles.inputEditMode}
               value={state}
               onChangeText={setState}
+              placeholder={i18n.t('State')}
             />
           </View>
         )}
-      </View>
+      </>
     )
   }
   const modalSex = () => {
@@ -301,7 +418,10 @@ export const StaffDetail = ({
           onChangeText={value => {
             setFirstName(value)
           }}
-          style={edit ? styles.inputEditMode : styles.input}></TextInput>
+          style={[
+            edit ? styles.inputEditMode : styles.input,
+            validError.firstNameEmpty && styles.inputError
+          ]}></TextInput>
         <Text style={styles.label}>{i18n.t('Last name')}</Text>
         <TextInput
           value={lastName}
@@ -309,7 +429,10 @@ export const StaffDetail = ({
           onChangeText={value => {
             setLastName(value)
           }}
-          style={edit ? styles.inputEditMode : styles.input}></TextInput>
+          style={[
+            edit ? styles.inputEditMode : styles.input,
+            validError.lastNameEmpty && styles.inputError
+          ]}></TextInput>
         <Text style={styles.label}>{i18n.t('Middle name')}</Text>
         <TextInput
           value={middleName}
@@ -325,9 +448,13 @@ export const StaffDetail = ({
           onChangeText={value => {
             setEmail(value)
           }}
-          style={edit ? styles.inputEditMode : styles.input}></TextInput>
-        <Text style={styles.label}>{i18n.t('Sex')}</Text>
+          style={[
+            edit ? styles.inputEditMode : styles.input,
+            validError.emailEmpty && styles.inputError
+          ]}></TextInput>
+        <Text style={styles.label}>{i18n.t('sex')}</Text>
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => {
             if (edit) setSexModalVisible(true)
           }}>
@@ -350,9 +477,10 @@ export const StaffDetail = ({
           onChangeText={value => {
             setPosition(value)
           }}
-          style={edit ? styles.inputEditMode : styles.input}>
-          {' '}
-        </TextInput>
+          style={[
+            edit ? styles.inputEditMode : styles.input,
+            validError.positionEmpty && styles.inputError
+          ]}></TextInput>
         <Text style={styles.label}>{i18n.t('Post')}</Text>
         <TextInput
           value={post}
@@ -360,7 +488,10 @@ export const StaffDetail = ({
           onChangeText={value => {
             setPost(value)
           }}
-          style={edit ? styles.inputEditMode : styles.input}></TextInput>
+          style={[
+            edit ? styles.inputEditMode : styles.input,
+            validError.postEmpty && styles.inputError
+          ]}></TextInput>
         <Text style={styles.label}>{i18n.t('Description')}</Text>
         <TextInput
           multiline
@@ -376,9 +507,10 @@ export const StaffDetail = ({
   const renderContactData = () => {
     return (
       <>
-        <Text style={styles.label}>{i18n.t('Country')}</Text>
+        <Text style={styles.label}>{i18n.t('Select country')}</Text>
 
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => {
             if (edit) setCountryModalVisible(true)
           }}>
@@ -388,7 +520,7 @@ export const StaffDetail = ({
         </TouchableOpacity>
         <ModalView
           visible={countryModalVisible}
-          children={modalContries()}
+          children={modalCountries()}
           onClose={() => {
             setCountryModalVisible(false)
           }}
@@ -397,6 +529,7 @@ export const StaffDetail = ({
         <Text style={styles.label}>{i18n.t('Select state')}</Text>
 
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => {
             if (edit) setStateModalVisible(true)
           }}>
@@ -419,7 +552,7 @@ export const StaffDetail = ({
             setCity(value)
           }}
           style={edit ? styles.inputEditMode : styles.input}></TextInput>
-        <Text style={styles.label}>{i18n.t('Addres')}</Text>
+        <Text style={styles.label}>{i18n.t('Address')}</Text>
         <TextInput
           value={address}
           editable={edit}
@@ -427,10 +560,11 @@ export const StaffDetail = ({
             setAddress(value)
           }}
           style={edit ? styles.inputEditMode : styles.input}></TextInput>
-        <Text style={styles.label}>{i18n.t('Addres index')}</Text>
+        <Text style={styles.label}>{i18n.t('address index')}</Text>
         <TextInput
           value={addressIndex}
           editable={edit}
+          keyboardType="numeric"
           onChangeText={value => {
             setAddressIndex(value)
           }}
@@ -440,36 +574,43 @@ export const StaffDetail = ({
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <TouchableOpacity onPress={() => pickImage()}>
-          <Image
-            source={{
-              uri: selectedImage
-                ? selectedImage
-                : getImagePath(staff)
-                ? getImagePath(staff)
-                : defaultImage
-            }}
-            style={styles.productItemImage}
-          />
-        </TouchableOpacity>
-        {renderPersonalData()}
-        {renderContactData()}
-      </ScrollView>
-      {edit && (
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => handleSendStaffData()}>
-          <Text>{i18n.t('Save')}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.containerView}>
+          <ScrollView style={styles.scrollView}>
+            <TouchableOpacity onPress={() => pickImage()}>
+              <Image
+                source={
+                  selectedImage
+                    ? { uri: selectedImage }
+                    : getImagePath(staff)
+                    ? { uri: getImagePath(staff) }
+                    : require('../assets/no_image.png')
+                }
+                style={styles.productItemImage}
+              />
+            </TouchableOpacity>
+            {renderPersonalData()}
+            {renderContactData()}
+          </ScrollView>
+          {edit && (
+            <TouchableOpacity
+              style={styles.floatingButton}
+              onPress={() => handleSendStaffData()}>
+              <Text>{i18n.t('save')}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )
 }
 
 export default connect(
-  state => ({
+  (state: any) => ({
     settings: state.settings
   }),
   dispatch => ({

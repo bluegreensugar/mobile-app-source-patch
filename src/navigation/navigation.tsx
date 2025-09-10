@@ -59,7 +59,7 @@ import ShopDiscussion from '../screens/ShopDiscussion'
 import NewShopReview from '../screens/NewShopReview'
 import StaffsManage from '../screens/StaffsManage'
 import StaffDetail from '../screens/StaffDetail'
-import AddNewStaff from '../screens/AddNewStaff'
+
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -312,7 +312,27 @@ const ProfileSection = () => {
         component={VendorManageAddProductStep3}
         options={{ title: i18n.t('') }}
       />
+      <Stack.Screen
+          name={'StaffsManage'}
+          component={StaffsManage}
+          options={{title: i18n.t('Employees'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Add')}
+                        />
+                    ) }}
+        />
+        <Stack.Screen
+          name={'StaffDetail'}
+          component={StaffDetail}
+          options={{title: i18n.t('Staff'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Edit')}
+                        />
+                    ) }}
+        />
     </Stack.Navigator>
+
+    
   )
 }
 
@@ -517,29 +537,7 @@ const MainNavigation = () => {
           component={NewShopReview}
           options={{title: i18n.t('Write a Review') }}
         />
-        <Stack.Screen
-          name={'StaffsManage'}
-          component={StaffsManage}
-          options={{title: i18n.t('Staffs'), headerRight: () => (
-                        <Button
-                            title={i18n.t('Add new')}
-                        />
-                    ) }}
-        />
-        <Stack.Screen
-          name={'StaffDetail'}
-          component={StaffDetail}
-          options={{title: i18n.t('Staff'), headerRight: () => (
-                        <Button
-                            title={i18n.t('Edit')}
-                        />
-                    ) }}
-        />
-        <Stack.Screen
-          name={'AddNewStaff'}
-          component={AddNewStaff}
-          options={{title: i18n.t('Add new')}}
-        />
+        
        
       </Stack.Navigator>
     </NavigationContainer>

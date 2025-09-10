@@ -484,7 +484,7 @@ export class ProfileEdit extends Component {
               this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
           }}>
           <View>
-            <Text style={styles.signInBtnText}>{i18n.t('Staffs')}</Text>
+            <Text style={styles.signInBtnText}>{i18n.t('Employees')}</Text>
           </View>
         </TouchableOpacity>
       </>
