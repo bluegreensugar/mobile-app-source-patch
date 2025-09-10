@@ -12,7 +12,8 @@ import {
   GET_SOCIAL_LOGIN_LINKS,
   SET_ADDONS_SETTINGS,
   SET_LAYOUT_ID,
-  WISH_LIST_FETCH_SUCCESS
+  WISH_LIST_FETCH_SUCCESS,
+  GET_COUNTRIES
 } from '../../constants'
 import API from '../../services/api'
 import store from '../store'
@@ -246,6 +247,17 @@ export async function initApp() {
   }
 
   i18n.changeLanguage(currentLanguage.langCode)
+
+  const countries = await API.get(
+    `/sra_countries`
+  )
+  store.dispatch({
+      type: GET_COUNTRIES,
+      payload: {
+          countries: countries.data.countries,
+          states: countries.data.states
+        }
+  })
 }
 
 export async function initAppNotConnected() {

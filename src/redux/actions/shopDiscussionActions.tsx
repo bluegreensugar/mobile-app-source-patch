@@ -20,7 +20,8 @@ export function fetchDiscussion(id = '0', params = { page: 1 }, type = 'E') {
       type: FETCH_SHOP_DISCUSSION_REQUEST
     })
     return Api.get(
-      `/sra_shop_discussion/?object_type=${type}&object_id=${id}&params[page]=${params.page}`
+     `/sra_shop_discussion/?object_type=${type}&object_id=${id}&params[page]=${params.page}`
+     
     )
 
       .then(response => {

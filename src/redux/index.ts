@@ -23,6 +23,7 @@ import vendorManageCategories from './reducers/VendorManage/categories'
 import vendorManageOrders from './reducers/VendorManage/orders'
 import shopDiscussion from './reducers/shopDiscussion'
 
+
 export const rootReducer = combineReducers({
   layouts,
   settings,

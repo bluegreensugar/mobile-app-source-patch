@@ -292,6 +292,7 @@ export class ProfileEdit extends Component {
             <Text style={styles.signInBtnText}>{i18n.t('Reviews')}</Text>
           </View>
         </TouchableOpacity>
+        
       </>
     )
   }
@@ -473,6 +474,17 @@ export class ProfileEdit extends Component {
           <View style={styles.IconNameWrapper}>
             <Icon name="info-outline" style={styles.menuItemIcon} />
             <Text style={styles.signInBtnText}>{i18n.t('Information')}</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('StaffsManage')}
+          style={{
+            ...styles.signInBtnContainer,
+            backgroundColor:
+              this.state.theme === 'light' ? '#ffffffff' : '#e5effcfe'
+          }}>
+          <View>
+            <Text style={styles.signInBtnText}>{i18n.t('Employees')}</Text>
           </View>
         </TouchableOpacity>
       </>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, Button } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
@@ -57,6 +57,8 @@ import { isDarkBackground } from '../utils'
 import AppDetail from '../screens/AppDetail'
 import ShopDiscussion from '../screens/ShopDiscussion'
 import NewShopReview from '../screens/NewShopReview'
+import StaffsManage from '../screens/StaffsManage'
+import StaffDetail from '../screens/StaffDetail'
 
 Icon.loadFont()
 const Stack = createNativeStackNavigator()
@@ -310,7 +312,27 @@ const ProfileSection = () => {
         component={VendorManageAddProductStep3}
         options={{ title: i18n.t('') }}
       />
+      <Stack.Screen
+          name={'StaffsManage'}
+          component={StaffsManage}
+          options={{title: i18n.t('Employees'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Add')}
+                        />
+                    ) }}
+        />
+        <Stack.Screen
+          name={'StaffDetail'}
+          component={StaffDetail}
+          options={{title: i18n.t('Staff'), headerRight: () => (
+                        <Button
+                            title={i18n.t('Edit')}
+                        />
+                    ) }}
+        />
     </Stack.Navigator>
+
+    
   )
 }
 
@@ -509,12 +531,14 @@ const MainNavigation = () => {
           name={'ShopDiscussion'}
           component={ShopDiscussion}
           options={{title: i18n.t('Reviews') }}
-        />
+        /> 
         <Stack.Screen
           name={'NewShopReview'}
           component={NewShopReview}
           options={{title: i18n.t('Write a Review') }}
         />
+        
+       
       </Stack.Navigator>
     </NavigationContainer>
   )
