@@ -508,12 +508,12 @@ const MainNavigation = () => {
         <Stack.Screen
           name={'ShopDiscussion'}
           component={ShopDiscussion}
-          options={{title: i18n.t('Reviews') }}
+          options={{title: i18n.t('Reviews')}}
         />
         <Stack.Screen
           name={'NewShopReview'}
           component={NewShopReview}
-          options={{title: i18n.t('Write a Review') }}
+          options={{title: i18n.t('Write a Review')}}
         />
       </Stack.Navigator>
     </NavigationContainer>
